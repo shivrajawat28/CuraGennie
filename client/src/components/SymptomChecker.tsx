@@ -1,20 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import { Loader2, ArrowRight, Activity, Thermometer, Heart, Droplets } from "lucide-react";
 import { useLocation } from "wouter";
+import { SymptomInput } from "@/components/SymptomInput";
 
 const formSchema = z.object({
-  symptoms: z.string().min(2, {
-    message: "Please describe your symptoms.",
+  symptoms: z.array(z.string()).min(1, {
+    message: "Please select at least one symptom.",
   }),
   age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
     message: "Please enter a valid age.",
@@ -42,7 +41,7 @@ export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      symptoms: "",
+      symptoms: [],
       age: "",
       gender: "",
       duration: "",
@@ -91,14 +90,14 @@ export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
                 <FormItem>
                   <FormLabel>What are your symptoms?</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="e.g., I have a headache, mild fever, and sore throat since yesterday..." 
-                      className="resize-none min-h-[100px] text-base"
-                      {...field} 
+                    <SymptomInput 
+                      value={field.value} 
+                      onChange={field.onChange}
+                      error={form.formState.errors.symptoms?.message}
                     />
                   </FormControl>
                   <FormDescription>
-                    Be as specific as possible. Mention pain levels or specific areas.
+                    Type to search common symptoms or add your own.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

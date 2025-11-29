@@ -84,26 +84,126 @@ export const MOCK_ANALYSIS_RESULT: SymptomAnalysisResult = {
   nearbyDoctors: MOCK_DOCTORS.filter((d) => d.specialty === "General Physician"),
 };
 
-export const MEDICINE_INFO = [
+export interface EquivalentMedicine {
+  brand: string;
+  generic_name: string;
+  approx_price: string;
+}
+
+export interface PharmacyLink {
+  label: string;
+  url: string;
+}
+
+export interface MedicineInfo {
+  name: string;
+  generic_name: string;
+  uses: string[];
+  warnings: string[];
+  sideEffects: string[];
+  category: string;
+  general_precautions: string[];
+  important_warnings: string[];
+  equivalent_medicines: EquivalentMedicine[];
+  pharmacy_links: PharmacyLink[];
+  disclaimer: string;
+}
+
+export const MEDICINE_INFO: MedicineInfo[] = [
   {
     name: "Paracetamol (Acetaminophen)",
-    uses: "Pain reliever and fever reducer.",
-    warnings: "Do not exceed recommended dose. Can cause liver damage if overdosed.",
-    sideEffects: "Nausea, stomach pain, loss of appetite.",
+    generic_name: "Paracetamol",
+    uses: ["Pain reliever", "Fever reducer"],
+    warnings: ["Do not exceed recommended dose", "Can cause liver damage if overdosed"],
+    sideEffects: ["Nausea", "Stomach pain", "Loss of appetite"],
     category: "Analgesic",
+    general_precautions: [
+      "Do not exceed the maximum daily dose on the label.",
+      "People with liver or kidney problems should consult a doctor before use."
+    ],
+    important_warnings: [
+      "Overdose can cause serious liver damage.",
+      "Keep out of reach of children."
+    ],
+    equivalent_medicines: [
+      { brand: "Calpol 650", generic_name: "Paracetamol", approx_price: "₹20–₹40 per strip" },
+      { brand: "Crocin 650", generic_name: "Paracetamol", approx_price: "₹25–₹45 per strip" }
+    ],
+    pharmacy_links: [
+      { label: "View on partner pharmacy", url: "https://example-pharmacy.com/search?query=Paracetamol" }
+    ],
+    disclaimer: "This app does not provide dosage or timing. Always follow your doctor and the medicine label."
+  },
+  {
+    name: "Dolo 650",
+    generic_name: "Paracetamol",
+    uses: ["Fever", "Mild to moderate pain"],
+    warnings: ["Do not exceed recommended dose", "Can cause liver damage if overdosed"],
+    sideEffects: ["Nausea", "Stomach discomfort (in some users)"],
+    category: "Analgesic and antipyretic",
+    general_precautions: [
+      "Do not exceed the maximum daily dose on the label.",
+      "People with liver or kidney problems should consult a doctor before use."
+    ],
+    important_warnings: [
+      "Overdose can cause serious liver damage.",
+      "Keep out of reach of children."
+    ],
+    equivalent_medicines: [
+      { brand: "Calpol 650", generic_name: "Paracetamol", approx_price: "₹20–₹40 per strip" },
+      { brand: "Crocin 650", generic_name: "Paracetamol", approx_price: "₹25–₹45 per strip" }
+    ],
+    pharmacy_links: [
+      { label: "View on partner pharmacy", url: "https://example-pharmacy.com/search?query=Dolo%20650" }
+    ],
+    disclaimer: "This app does not provide dosage or timing. Always follow your doctor and the medicine label."
   },
   {
     name: "Ibuprofen",
-    uses: "Reduces pain, inflammation, and fever.",
-    warnings: "Take with food to avoid stomach upset. Avoid if you have ulcers.",
-    sideEffects: "Heartburn, stomach pain, dizziness.",
+    generic_name: "Ibuprofen",
+    uses: ["Reduces pain", "Inflammation", "Fever"],
+    warnings: ["Take with food to avoid stomach upset", "Avoid if you have ulcers"],
+    sideEffects: ["Heartburn", "Stomach pain", "Dizziness"],
     category: "NSAID",
+    general_precautions: [
+      "Take with food or milk to prevent stomach upset.",
+      "Avoid if you have a history of stomach ulcers or bleeding."
+    ],
+    important_warnings: [
+      "May increase risk of heart attack or stroke if used long-term.",
+      "Can cause stomach bleeding."
+    ],
+    equivalent_medicines: [
+      { brand: "Brufen 400", generic_name: "Ibuprofen", approx_price: "₹15–₹30 per strip" },
+      { brand: "Ibugesic", generic_name: "Ibuprofen", approx_price: "₹20–₹35 per strip" }
+    ],
+    pharmacy_links: [
+      { label: "View on partner pharmacy", url: "https://example-pharmacy.com/search?query=Ibuprofen" }
+    ],
+    disclaimer: "This app does not provide dosage or timing. Always follow your doctor and the medicine label."
   },
   {
     name: "Cetirizine",
-    uses: "Relieves allergy symptoms like runny nose and sneezing.",
-    warnings: "May cause drowsiness. Avoid alcohol.",
-    sideEffects: "Drowsiness, dry mouth, fatigue.",
+    generic_name: "Cetirizine",
+    uses: ["Relieves allergy symptoms", "Runny nose", "Sneezing"],
+    warnings: ["May cause drowsiness", "Avoid alcohol"],
+    sideEffects: ["Drowsiness", "Dry mouth", "Fatigue"],
     category: "Antihistamine",
+    general_precautions: [
+      "May cause drowsiness, do not drive if affected.",
+      "Avoid alcohol consumption while taking this medicine."
+    ],
+    important_warnings: [
+      "Tell your doctor if you are pregnant or breastfeeding.",
+      "Do not take more than recommended."
+    ],
+    equivalent_medicines: [
+      { brand: "Cetzine", generic_name: "Cetirizine", approx_price: "₹18–₹35 per strip" },
+      { brand: "Zyrtec", generic_name: "Cetirizine", approx_price: "₹25–₹50 per strip" }
+    ],
+    pharmacy_links: [
+      { label: "View on partner pharmacy", url: "https://example-pharmacy.com/search?query=Cetirizine" }
+    ],
+    disclaimer: "This app does not provide dosage or timing. Always follow your doctor and the medicine label."
   },
 ];

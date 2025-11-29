@@ -1,0 +1,261 @@
+You already have the Cura Gennie health assistant prototype built.
+
+Please update the existing codebase with the following changes, WITHOUT breaking current layout and logic:
+
+========================
+1) Improve Symptom Entry Input
+========================
+
+Goal: Replace the basic symptom text input with a smarter, multi-select symptom input that:
+- Shows suggestions as the user types (e.g. "Fev" → "Fever")
+- Allows selecting multiple symptoms
+- Stores symptoms as an array
+- Still sends these to the backend symptom analysis API.
+
+Implementation details:
+
+1. Create a reusable `SymptomInput` component (or update the existing symptom input field) with:
+   - A text input where user can type symptom names.
+   - A predefined list/array of common symptoms, for example:
+     ```ts
+     const COMMON_SYMPTOMS = [
+       "Fever",
+       "Headache",
+       "Cough",
+       "Cold",
+       "Sore throat",
+       "Chest pain",
+       "Shortness of breath",
+       "Fatigue",
+       "Body ache",
+       "Nausea",
+       "Vomiting",
+       "Loose motions",
+       "Abdominal pain",
+       "Dizziness",
+       "Back pain",
+       "Skin rash",
+       "Itching",
+       "Red eyes",
+       "Burning urination"
+     ];
+     ```
+   - As the user types, show a dropdown of matching suggestions from this list (case-insensitive).
+   - When the user clicks a suggestion, it should be added as a “chip”/“tag” below the input (e.g. Fever, Headache, etc).
+   - User should also be able to press Enter to add the current input text as a custom symptom (if not in the list).
+   - Each chip should have a small “x” icon to remove that symptom.
+
+2. The selected symptoms should be stored in state as an array, e.g.:
+   ```ts
+   const [symptoms, setSymptoms] = useState<string[]>([]);
+and this array should be used wherever the symptom data is sent to the backend (for the analyze symptoms API).
+
+Ensure that:
+
+The "Analyze Symptoms" button sends the updated array of symptoms.
+
+Existing age, gender, duration, vitals etc. fields still work as before.
+
+UI remains responsive and consistent with the current design (Tailwind classes, cards, etc).
+
+========================
+2) Update Header / Navbar (remove Symptom Checker tab)
+Goal: Clean up navigation by removing the extra “Symptom Checker” item from the header.
+
+Locate the Navbar/Header component (e.g., Navbar.tsx or equivalent).
+
+Remove the "Symptom Checker" navigation link from the header.
+
+Keep the other nav items like:
+
+Home
+
+Articles
+
+Doctors
+
+About
+
+Medicine Info (if it exists as a header option)
+
+Ensure layout is still centered/aligned properly on desktop and mobile.
+
+========================
+3) Upgrade Medicine Info Feature (Text + Image Upload, Safer Content)
+Goal: In the "Medicine Info" feature:
+
+Let the user either TYPE the medicine name OR UPLOAD a clear tablet/strip image.
+
+Show a disclaimer under the image upload.
+
+Show richer information from the backend: what it’s used for, category, precautions, common side effects, similar medicines with approximate prices, and safe external links — WITHOUT giving dosage/timing.
+
+A) UI changes (Medicine Info section / modal):
+
+In the Medicine Info UI (modal, drawer, or page), add two input methods:
+
+Option 1: Text input for medicine name (e.g. "Dolo 650", "Paracetamol", etc.)
+
+Option 2: File upload for tablet image (using <input type="file" accept="image/*" />).
+
+You can either:
+
+Use two tabs: “By Name” and “By Image”
+OR
+
+Show both fields one after the other, with clear labels.
+
+Under the image upload field, add a disclaimer text, for example:
+
+“Please ensure the medicine strip/tablet image clearly shows the brand name and strength.
+This feature is for basic information only, not for prescriptions or dosage.”
+
+Add a button like:
+
+“Get Medicine Info”
+which triggers a request to the backend. The logic should:
+
+Prefer the typed name if provided.
+
+If no text is provided but an image is uploaded, call the image-based endpoint or placeholder.
+
+Keep the UI clean:
+
+Use cards to show the returned info.
+
+Maintain the app’s theme (Cura Gennie styling, Tailwind classes, rounded corners, etc.).
+
+B) Backend changes for medicine info (text-based):
+
+Ensure there is a backend route like:
+
+POST /api/medicine-info
+that accepts JSON body:
+
+json
+Copy code
+{
+  "name": "Dolo 650"
+}
+and optionally:
+
+json
+Copy code
+{
+  "name": "Dolo 650",
+  "source": "image" // optional
+}
+This backend handler should:
+
+Use the OpenAI API (or whichever AI model you configured) to construct a SAFE, NON-PRESCRIPTIVE response.
+
+The AI/system prompt must explicitly:
+
+Avoid giving dosage (mg, tablets per day, timing).
+
+Avoid saying “take this medicine” or direct instructions.
+
+Focus only on:
+
+What conditions this medicine is generally used for.
+
+Drug type/category.
+
+General precautions and warnings.
+
+Common side effects.
+
+Important safety notes.
+
+Equivalent / alternative brands (same composition) with approximate price ranges.
+
+A note that user should follow doctor’s advice and the label on the pack.
+
+The backend should return a structured JSON like:
+
+json
+Copy code
+{
+  "name": "Dolo 650",
+  "generic_name": "Paracetamol",
+  "used_for": [
+    "Fever",
+    "Mild to moderate pain"
+  ],
+  "category": "Analgesic and antipyretic",
+  "general_precautions": [
+    "Do not exceed the maximum daily dose on the label.",
+    "People with liver or kidney problems should consult a doctor before use."
+  ],
+  "common_side_effects": [
+    "Nausea",
+    "Mild stomach discomfort (in some users)"
+  ],
+  "important_warnings": [
+    "Overdose can cause serious liver damage.",
+    "Keep out of reach of children."
+  ],
+  "equivalent_medicines": [
+    {
+      "brand": "Calpol 650",
+      "generic_name": "Paracetamol",
+      "approx_price": "₹20–₹40 per strip"
+    },
+    {
+      "brand": "Crocin 650",
+      "generic_name": "Paracetamol",
+      "approx_price": "₹25–₹45 per strip"
+    }
+  ],
+  "pharmacy_links": [
+    {
+      "label": "View on partner pharmacy",
+      "url": "https://example-pharmacy.com/search?query=Dolo%20650"
+    }
+  ],
+  "disclaimer": "This app does not provide dosage or timing. Always follow your doctor and the medicine label."
+}
+On the frontend, display this information nicely in the Medicine Info UI:
+
+Top: Medicine name + generic name.
+
+Sections for:
+
+Used for
+
+Category
+
+General precautions
+
+Common side effects
+
+Important warnings
+
+Equivalent medicines with approx. price (in a small table or card grid).
+
+A CTA button “View on partner pharmacy” that just opens the URL in a new tab (no internal checkout or payment flow).
+
+Show the disclaimer in a clearly visible style (e.g., red or muted but bold).
+
+C) Image-based flow (for now, minimal implementation):
+
+For the image upload, if you don’t yet implement real image recognition:
+
+Either call the same /api/medicine-info endpoint with a hardcoded placeholder name and show a “demo result”.
+OR
+
+Show a “Coming soon: image-based medicine recognition” message after upload.
+
+The main requirement is that the UI supports image upload cleanly, with the disclaimer and proper layout.
+
+========================
+General Requirements
+Keep all existing core functionality working (symptom analysis, results UI, articles, doctors, footer, etc.).
+
+New changes must be fully responsive.
+
+Follow the existing code style (React + TypeScript + Tailwind).
+
+Do not introduce any dosage or timing instructions for medicines.
+
+Always include disclaimers in both symptom analysis results and medicine info views.
