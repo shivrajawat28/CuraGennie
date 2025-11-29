@@ -9,6 +9,7 @@ import SymptomResults from "@/pages/SymptomResults";
 import Doctors from "@/pages/Doctors";
 import Articles from "@/pages/Articles";
 import ArticleDetail from "@/pages/ArticleDetail";
+import ConditionDetail from "@/pages/ConditionDetail";
 import { Header } from "@/components/Header"; // For About page placeholder
 
 function About() {
@@ -43,6 +44,7 @@ function Router() {
       <Route path="/doctors" component={Doctors} />
       <Route path="/articles" component={Articles} />
       <Route path="/articles/:id" component={ArticleDetail} />
+      <Route path="/conditions/:slug" component={ConditionDetail} />
       <Route path="/about" component={About} />
       <Route component={NotFound} />
     </Switch>

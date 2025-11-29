@@ -1,0 +1,236 @@
+I already have a working Cura Gennie prototype with symptom analysis and results.
+
+Now I want to upgrade the RESULT section and CONDITION DETAIL flow.
+
+IMPORTANT: The app must NOT prescribe medicines or give exact dosage, timing, or “how to take” instructions.  
+It should only:
+- Suggest possible conditions
+- Explain them in simple language
+- Focus on prevention, self-care, and awareness
+- Recommend what type of doctor to consult
+- Show a list of doctors (mock data)
+- For medicines: mention “commonly used medicine types/classes” with a strong disclaimer, but NO dosage, NO frequency, NO instructions like “take 1 tablet 3 times a day”.
+
+================================
+1) Add Back Button in Result View
+================================
+
+Currently, after symptom analysis, the user sees a Result section with possible diseases/conditions.
+
+Update this Result section so that:
+
+- At the top of the results area, add a simple button:
+  - Label: “← Back to Symptom Entry”
+  - On click:
+    - Takes the user back to the symptom entry form section (either via navigation, scroll, or route change depending on the current structure).
+    - For SPA style:
+      - If we’re using conditional rendering (e.g., `showResults` state), then clicking this should set `showResults = false` and show the symptom input again.
+
+Make sure:
+- The button is styled consistently with the app (Tailwind, rounded, subtle hover).
+- It is clearly visible above the results list.
+
+========================================
+2) Clickable Conditions → Detail Page
+========================================
+
+Right now, the symptom analysis shows “Possible diseases/conditions” with very short descriptions.
+
+I want each condition card to be clickable so that:
+
+- When the user clicks on a condition (e.g., “Viral Fever”, “Migraine”),
+- It opens a **dedicated Condition Detail Page** (or a full-screen modal) with multiple sections.
+
+You can implement this using React Router pages like:
+- `/conditions/:slug`
+OR a modal that receives the condition data.
+
+-----------------------
+Condition Detail Layout
+-----------------------
+
+On the Condition Detail page, show the following sections in order:
+
+1) **Condition overview**
+   - Name of the condition
+   - Short introduction in simple, user-friendly language
+   - A small tag showing severity level (e.g., Mild / Moderate / Needs Attention)
+
+2) **How does this condition happen? (Causes & Effects)**
+   - Section title: “How does this condition happen?”
+   - Bullet points or small paragraphs covering:
+     - Common causes
+     - What is happening in the body in a simple way
+     - Typical effects/symptoms in general (not diagnosing the user)
+
+3) **How to reduce the risk and prevent worsening**
+   - Section title: “How can you take care of yourself?”
+   - Subsections:
+     - “Prevention & daily care”
+       - General lifestyle and habit tips
+       - Simple do’s and don’ts
+     - “Exercises, yoga, and movement”
+       - Light, safe activities that may help (walking, stretching, breathing exercises, etc.)
+       - Avoid heavy or risky activities if not suitable
+
+4) **Social contact and going outside**
+   - Section title: “Should you go outside or meet people?”
+   - Explain in simple language:
+     - When it is better to rest at home
+     - When light outdoor activity is okay
+     - When to avoid crowded places or close contact (e.g., fever, cough, infection risk)
+
+5) **How your friends/relatives/guardians can help**
+   - Section title: “How can others help you?”
+   - Bullet points like:
+     - Help you stay hydrated
+     - Monitor warning signs
+     - Make sure you rest, eat, and take care
+     - When they should immediately help you contact a doctor/hospital
+
+6) **Important safety disclaimer (red box)**
+   - A clearly visible red-highlighted note, for example:
+     > “Important: The information on this page is for awareness only.  
+     > It is NOT a medical diagnosis or prescription.  
+     > Always consult a qualified doctor before taking any medicine or starting treatment.”
+
+7) **Common medicine categories used (NON-PRESCRIPTIVE)**
+   - Section title: “Common treatment approaches (for doctors)”
+   - This section must:
+     - Talk about medicine **categories or classes** (e.g., “pain relievers”, “antipyretics”, “antibiotics if prescribed by a doctor”), NOT exact regimens.
+     - Avoid giving exact dosage, tablet count, timings, or “how to take”.
+     - Use general phrasing like:
+       - “Doctors may sometimes use [medicine class] for this type of condition, depending on the case.”
+   - The data should be structured from backend like:
+
+     ```json
+     "treatment_overview": {
+       "common_medicine_classes": [
+         "Pain relievers (analgesics)",
+         "Fever reducers (antipyretics)",
+         "Sometimes antibiotics if a bacterial infection is confirmed by a doctor"
+       ],
+       "non_medicine_care": [
+         "Rest and hydration",
+         "Diet and lifestyle changes",
+         "Monitoring symptoms"
+       ]
+     }
+     ```
+
+   - Under this, repeat a strong disclaimer:
+     > “The medicines mentioned here are general categories that doctors may consider.  
+     > This is NOT a prescription. Do not start or change any medicine without consulting a doctor.”
+
+   - DO NOT generate examples like “Take X mg 3 times a day” or “take this tablet with water before food”.  
+     This must be avoided completely.
+
+8) **Suggested doctors for this condition**
+   - Section title: “Doctors who can help with this condition”
+   - Using the condition’s `recommended_specialist` (e.g., “General Physician”, “Dermatologist”, “Cardiologist”), fetch from a backend/mock list of doctors for that specialty.
+   - Show cards for 3–5 doctors:
+     - Name
+     - Specialty
+     - Experience (e.g., “8+ years experience”)
+     - Location/City
+     - Rating (e.g., ⭐ 4.5)
+     - Approx consult charges (e.g., “₹400–₹700 per consult”)
+     - Badges like “Video consult available” / “Clinic visit”
+   - Each doctor card should have:
+     - A button: **“Book Appointment”**
+     - A button: **“Video Call (Coming Soon)”** or a disabled button with info
+   - For now, booking can just open a modal or toast: “Booking integration coming soon”.
+
+----------------------------------------
+Backend change for Condition Detail Page
+----------------------------------------
+
+When the user clicks a condition from the result list, the frontend can:
+
+- Either:
+  - Pass the condition object via route state/context, if the data is already rich enough.
+- Or:
+  - Call a backend endpoint:
+    - `GET /api/condition-detail?name=<conditionName>`
+  - Backend uses OpenAI (or the configured AI model) to generate a structured JSON with fields like:
+
+  ```json
+  {
+    "name": "Viral Fever",
+    "severity": "moderate",
+    "overview": "Short plain-language description...",
+    "causes_and_effects": [
+      "Usually caused by viral infection such as ...",
+      "May lead to high temperature, body pain, weakness, etc."
+    ],
+    "self_care": {
+      "prevention_and_daily_care": [
+        "Rest in a cool, comfortable environment",
+        "Stay hydrated with water and oral fluids",
+        "Avoid very heavy or junk food"
+      ],
+      "exercises_and_yoga": [
+        "Very light stretching if you feel comfortable",
+        "Gentle breathing exercises",
+        "Avoid intense workouts during fever"
+      ]
+    },
+    "social_and_outdoor_guidance": [
+      "Avoid crowded places while you have fever or cough",
+      "Wear a mask if you need to go out",
+      "Try to minimise close contact to reduce spread"
+    ],
+    "support_from_others": [
+      "Family can help you by reminding you to drink fluids",
+      "They can watch for warning signs like very high fever or confusion",
+      "They should help you reach a doctor if your condition worsens"
+    ],
+    "treatment_overview": {
+      "common_medicine_classes": [
+        "Pain relievers (analgesics)",
+        "Fever reducers (antipyretics)"
+      ],
+      "non_medicine_care": [
+        "Rest and adequate sleep",
+        "Light, easy-to-digest food",
+        "Hydration and electrolyte balance"
+      ]
+    },
+    "recommended_specialist": "General Physician",
+    "disclaimer": "This information is for awareness only, not a diagnosis or prescription."
+  }
+The backend’s AI prompt MUST:
+
+Avoid dosage amounts, tablet counts, schedules, or direct instructions.
+
+Never say “take this medicine” in a prescriptive way.
+
+Always add a strong disclaimer.
+
+================================
+3) Keep Legal & Safety Boundaries
+Throughout this change:
+
+Do NOT implement or generate:
+
+Exact medicine names with dosing schedules.
+
+Instructions like “take 1 tablet 3 times a day with water”.
+
+Step-by-step treatment regimens.
+
+Focus on:
+
+Awareness
+
+Education
+
+Self-care and lifestyle
+
+When to see a doctor
+
+What type of doctor to see
+
+Mock doctor listing and booking buttons
+
+All new UI should be responsive, match the existing design/theme of Cura Gennie, and keep the experience smooth for hackathon demo.

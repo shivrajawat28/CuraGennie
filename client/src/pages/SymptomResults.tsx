@@ -4,11 +4,11 @@ import { MOCK_ANALYSIS_RESULT, MOCK_DOCTORS } from "@/lib/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
-import { AlertCircle, CheckCircle, Calendar, Video, MapPin, Star } from "lucide-react";
+import { AlertCircle, CheckCircle, Calendar, Video, MapPin, Star, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 export default function SymptomResults() {
   const { toast } = useToast();
@@ -30,10 +30,17 @@ export default function SymptomResults() {
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto space-y-10">
+        <div className="max-w-4xl mx-auto space-y-8">
           
+          {/* Back Button */}
+          <Link href="/symptom-checker">
+             <Button variant="ghost" className="gap-2 pl-0 hover:bg-transparent hover:text-primary mb-4">
+               <ArrowLeft className="w-4 h-4" /> Back to Symptom Entry
+             </Button>
+          </Link>
+
           {/* Header Section */}
-          <div className="space-y-2 text-center">
+          <div className="space-y-2 text-center pb-4">
             <h1 className="text-3xl md:text-4xl font-bold font-heading">Based on your inputs, here's what we found</h1>
             <p className="text-muted-foreground">AI-powered analysis of your symptoms.</p>
           </div>
@@ -55,64 +62,39 @@ export default function SymptomResults() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
                 >
-                  <Card className="overflow-hidden border-l-4 border-l-primary shadow-md hover:shadow-lg transition-shadow">
-                    <CardHeader className="pb-3 bg-muted/10">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle className="text-xl mb-1">{condition.name}</CardTitle>
-                          <CardDescription>{condition.description}</CardDescription>
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <Badge variant={condition.severity === 'high' ? 'destructive' : 'secondary'} className="uppercase tracking-wider text-[10px]">
-                            {condition.severity} Severity
-                          </Badge>
-                          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                            <span>Match</span>
-                            <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                              <div 
-                                className="h-full bg-primary" 
-                                style={{ width: `${condition.probability}%` }}
-                              />
+                  {/* Make the card clickable linking to detail page */}
+                  <Link href={`/conditions/${idx === 0 ? 'viral-upper-respiratory-infection' : 'seasonal-allergies'}`}>
+                    <Card className="overflow-hidden border-l-4 border-l-primary shadow-md hover:shadow-xl transition-all cursor-pointer group bg-card/50 hover:bg-card">
+                      <CardHeader className="pb-3 bg-muted/10 group-hover:bg-primary/5 transition-colors">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-xl mb-1 group-hover:text-primary transition-colors">{condition.name}</CardTitle>
+                            <CardDescription>{condition.description}</CardDescription>
+                          </div>
+                          <div className="flex flex-col items-end gap-2">
+                            <Badge variant={condition.severity === 'high' ? 'destructive' : 'secondary'} className="uppercase tracking-wider text-[10px]">
+                              {condition.severity} Severity
+                            </Badge>
+                            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                              <span>Match</span>
+                              <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                                <div 
+                                  className="h-full bg-primary" 
+                                  style={{ width: `${condition.probability}%` }}
+                                />
+                              </div>
+                              <span>{condition.probability}%</span>
                             </div>
-                            <span>{condition.probability}%</span>
                           </div>
                         </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-4">
-                      <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="details" className="border-none">
-                          <AccordionTrigger className="py-2 text-sm text-primary hover:no-underline hover:text-primary/80">
-                            View details & guidance
-                          </AccordionTrigger>
-                          <AccordionContent className="space-y-4 pt-4">
-                            <div className="grid md:grid-cols-2 gap-6">
-                              <div className="space-y-2">
-                                <h4 className="font-semibold text-foreground flex items-center gap-2 text-sm">
-                                  <CheckCircle className="w-4 h-4 text-green-500" /> What you can do
-                                </h4>
-                                <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-1">
-                                  {result.guidance.map((tip, i) => (
-                                    <li key={i}>{tip}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                              <div className="space-y-2">
-                                <h4 className="font-semibold text-foreground flex items-center gap-2 text-sm">
-                                  <Star className="w-4 h-4 text-yellow-500" /> Lifestyle Tips
-                                </h4>
-                                <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-1">
-                                  {result.lifestyleTips.map((tip, i) => (
-                                    <li key={i}>{tip}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </CardContent>
-                  </Card>
+                      </CardHeader>
+                      <CardContent className="pt-4">
+                        <p className="text-sm text-primary font-medium flex items-center gap-1">
+                           Tap to see full details and guidance <ArrowLeft className="w-4 h-4 rotate-180" />
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </motion.div>
               ))}
             </div>

@@ -79,6 +79,7 @@ export const MOCK_ANALYSIS_RESULT: SymptomAnalysisResult = {
     "Avoid cold drinks and ice cream.",
     "Use a humidifier in your room to keep the air moist.",
     "Wash your hands frequently to prevent spreading.",
+    "Ensure adequate ventilation in your living space."
   ],
   recommendedSpecialist: "General Physician",
   nearbyDoctors: MOCK_DOCTORS.filter((d) => d.specialty === "General Physician"),
@@ -206,4 +207,119 @@ export const MEDICINE_INFO: MedicineInfo[] = [
     ],
     disclaimer: "This app does not provide dosage or timing. Always follow your doctor and the medicine label."
   },
+];
+
+
+export interface ConditionDetail {
+  name: string;
+  severity: "low" | "moderate" | "high" | "needs attention";
+  overview: string;
+  causes_and_effects: string[];
+  self_care: {
+    prevention_and_daily_care: string[];
+    exercises_and_yoga: string[];
+  };
+  social_and_outdoor_guidance: string[];
+  support_from_others: string[];
+  treatment_overview: {
+    common_medicine_classes: string[];
+    non_medicine_care: string[];
+  };
+  recommended_specialist: string;
+}
+
+export const MOCK_CONDITION_DETAILS: ConditionDetail[] = [
+  {
+    name: "Viral Upper Respiratory Infection",
+    severity: "low",
+    overview: "A viral infection of the nose, throat, and airways. It's commonly known as a cold and usually resolves on its own within a week or two.",
+    causes_and_effects: [
+      "Caused by various viruses (rhinovirus, adenovirus, etc.) spread through droplets.",
+      "Leads to inflammation of the nasal passages and throat.",
+      "Common symptoms include runny nose, sore throat, cough, and mild body ache."
+    ],
+    self_care: {
+      prevention_and_daily_care: [
+        "Wash hands frequently with soap and water.",
+        "Stay hydrated with warm fluids like soups and herbal tea.",
+        "Rest in a well-ventilated room.",
+        "Use a humidifier to ease nasal congestion."
+      ],
+      exercises_and_yoga: [
+        "Gentle neck stretches if comfortable.",
+        "Deep breathing exercises (Pranayama) to improve lung capacity.",
+        "Avoid heavy cardio or gym workouts until fully recovered."
+      ]
+    },
+    social_and_outdoor_guidance: [
+      "It is best to stay home to avoid spreading the virus to others.",
+      "If you must go out, wear a mask.",
+      "Avoid crowded places and close contact with vulnerable people (elderly, infants)."
+    ],
+    support_from_others: [
+      "Ensure the patient has access to plenty of fluids and healthy food.",
+      "Monitor temperature regularly.",
+      "Help keep the patient's environment clean and dust-free."
+    ],
+    treatment_overview: {
+      common_medicine_classes: [
+        "Analgesics (pain relievers) for body ache",
+        "Antipyretics (fever reducers) if fever is present",
+        "Decongestants for stuffy nose",
+        "Antihistamines for runny nose/sneezing"
+      ],
+      non_medicine_care: [
+        "Steam inhalation for congestion relief",
+        "Saltwater gargle for sore throat",
+        "Adequate sleep and rest"
+      ]
+    },
+    recommended_specialist: "General Physician"
+  },
+  {
+    name: "Seasonal Allergies",
+    severity: "low",
+    overview: "An immune system reaction to substances in the environment like pollen, dust, or pet dander.",
+    causes_and_effects: [
+      "Triggered by allergens like pollen, dust mites, or mold.",
+      "Histamine release causes sneezing, itching, and runny nose.",
+      "Can lead to fatigue and poor sleep quality."
+    ],
+    self_care: {
+      prevention_and_daily_care: [
+        "Identify and avoid known triggers.",
+        "Keep windows closed during high pollen seasons.",
+        "Wash bedding regularly in hot water.",
+        "Shower after being outdoors to remove pollen."
+      ],
+      exercises_and_yoga: [
+        "Indoor yoga or stretching.",
+        "Avoid outdoor exercise on high pollen days.",
+        "Breathing exercises to reduce stress."
+      ]
+    },
+    social_and_outdoor_guidance: [
+      "Generally safe to go out, but avoid high-allergen environments (e.g., parks in spring).",
+      "Wearing a mask outdoors can help filter out pollen and dust.",
+      "Allergies are not contagious, so social contact is safe."
+    ],
+    support_from_others: [
+      "Help identify and minimize allergens in the home.",
+      "Keep windows closed on windy days.",
+      "Ensure the home is vacuumed and dusted regularly."
+    ],
+    treatment_overview: {
+      common_medicine_classes: [
+        "Antihistamines to block allergic reactions",
+        "Nasal corticosteroids for inflammation",
+        "Decongestants for short-term relief"
+      ],
+      non_medicine_care: [
+        "Saline nasal irrigation (Neti pot)",
+        "HEPA air purifiers in the bedroom",
+        "Cold compresses for itchy eyes"
+      ]
+    },
+    recommended_specialist: "General Physician" // Or Allergist/Immunologist
+  }
 ];
