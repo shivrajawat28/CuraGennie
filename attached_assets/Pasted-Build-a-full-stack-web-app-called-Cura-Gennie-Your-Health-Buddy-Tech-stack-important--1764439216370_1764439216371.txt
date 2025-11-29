@@ -1,0 +1,134 @@
+Build a full-stack web app called **Cura Gennie – Your Health Buddy**.
+
+⚙️ Tech stack (important)
+- React + TypeScript for frontend
+- Node.js (or Next.js API routes) for backend
+- Tailwind CSS for styling
+- Use a proper backend API layer: no hardcoded demo result. Every symptom query must call a real backend endpoint.
+- Use environment variables for keys (e.g. `OPENAI_API_KEY`), never hardcode them.
+
+High-level concept:
+Cura Gennie is **not a prescription or diagnosis app**.  
+It is a **health awareness assistant** that:
+- Takes user symptoms + basic info
+- Sends that to an AI-powered backend
+- Returns:
+  - Possible conditions (with probability percentages)
+  - Friendly explanations and prevention guidance
+  - Lifestyle tips, what to do / what to avoid
+  - Recommended specialist type (e.g., General Physician, Cardiologist)
+  - Suggested nearby doctors (from mock or pre-seeded data)
+- Also has a **Medicine Info** feature that tells users:
+  - What a medicine is generally used for
+  - Type/class of drug
+  - General precautions and warnings
+  - Common side effects
+  - Strong disclaimer: “Follow your doctor and medicine label for dosage and timing.”
+
+Absolutely NO:
+- No dosage (mg, tablets per day)
+- No “take before/after food”
+- No prescribing or telling user exactly how to take medicines
+- No claiming to diagnose or cure
+
+========================
+UI / UX: Gen Z + Healthcare Feel
+========================
+
+Overall style:
+- Friendly, modern, clean health-tech UI
+- Soft teal / cyan / pastel blue primary colors
+- Lots of white space, rounded cards, smooth hover animations
+- Fully responsive: looks great on mobile, tablet, desktop
+- Include a light/dark mode toggle in the header
+
+Pages / Sections:
+- Home (main)
+- Symptom Checker (core feature section)
+- Articles / Guides
+- Doctors
+- About
+- A global “Medicine Info” UI entry (via header)
+
+========================
+1) Header / Navbar
+========================
+
+Create a sticky header with:
+
+Left:
+- Circular logo icon (placeholder) next to app name
+  - Text:
+    - Big: **Cura Gennie**
+    - Small subtitle: **Your Health Buddy**
+
+Center / Right:
+- Nav links: Home, Symptom Checker, Articles, Doctors, About
+- “Medicine Info” button in the header that opens a modal/drawer
+- A “Login / Sign Up” button (UI only, no real auth required for now)
+- A theme toggle (light/dark mode)
+
+On scroll:
+- Keep the header sticky with slight blur and a subtle shadow.
+
+========================
+2) Symptom Checker (Main Home Section)
+========================
+
+On the homepage, under the header:
+
+Left side:
+- Hero text:
+  - Title: “Health made simple with Cura Gennie”
+  - Subtitle: “Understand what your symptoms could mean, how to take care of yourself, and which doctor to talk to.”
+
+Right side (or below on mobile):
+- A Symptom Checker card with the following fields:
+
+Form fields:
+- **Symptoms** (multi-select + free text)
+  - User types symptom words (e.g. “fever”, “headache”, “chest pain”)
+  - Show suggestions as tags/chips
+- **Age** (number)
+- **Gender** (dropdown: Male / Female / Other)
+- **Duration of symptoms**
+  - Dropdown: Less than 1 day, 1–3 days, 3–7 days, More than a week
+- **Optional Vitals**:
+  - Temperature (°C)
+  - Pulse (bpm)
+  - SpO₂ (%)
+  - BP (text field)
+
+At the bottom:
+- Primary button: **“Analyze Symptoms”**
+- On click:
+  - Call a backend endpoint: `POST /api/analyze-symptoms`
+  - Show a loading state while waiting
+  - Then display the results section below the form
+
+Design:
+- Card with gradient border or soft glow
+- Rounded corners, subtle shadow
+- Inputs spaced nicely, labels clear
+
+========================
+3) Backend: Symptom Analysis API
+========================
+
+Create a backend endpoint:
+- `POST /api/analyze-symptoms`
+- Input JSON body:
+  ```json
+  {
+    "symptoms": ["fever", "headache"],
+    "age": 21,
+    "gender": "male",
+    "duration": "1-3 days",
+    "vitals": {
+      "temperature": 38.5,
+      "pulse": 90,
+      "spo2": 97,
+      "bp": "120/80"
+    },
+    "location": "user city (optional)"
+  }
