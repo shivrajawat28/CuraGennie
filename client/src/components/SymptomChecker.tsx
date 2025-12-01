@@ -38,6 +38,7 @@ export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
   const [medicalFiles, setMedicalFiles] = useState<File[]>([]);
+  const [showMedicalUpload, setShowMedicalUpload] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -250,72 +251,86 @@ export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
               </div>
             </div>
 
-            {/* Medical History Upload Section */}
-            <div className="space-y-4 pt-4 border-t border-border/50">
-              <div>
-                <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2 mb-1">
-                  Upload Medical History <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
-                </h4>
-                <p className="text-xs text-muted-foreground mb-3">
-                  Upload lab reports, prescriptions, or previous diagnosis notes to help improve the AI context.
-                </p>
+            {/* Medical History Upload Toggle */}
+            <div className="pt-4 border-t border-border/50 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Upload className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium text-muted-foreground">
+                  Upload Medical History <span className="text-xs text-muted-foreground/70">(Optional)</span>
+                </span>
               </div>
-              <div 
-                className="border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-teal-50/30 dark:hover:bg-teal-900/10 rounded-lg p-6 text-center cursor-pointer transition-all duration-200"
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.currentTarget.classList.add('border-primary', 'bg-teal-50/30', 'dark:bg-teal-900/10');
-                }}
-                onDragLeave={(e) => {
-                  e.currentTarget.classList.remove('border-primary', 'bg-teal-50/30', 'dark:bg-teal-900/10');
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  e.currentTarget.classList.remove('border-primary', 'bg-teal-50/30', 'dark:bg-teal-900/10');
-                  const files = Array.from(e.dataTransfer.files);
-                  setMedicalFiles([...medicalFiles, ...files]);
-                }}
-                onClick={() => document.getElementById('medical-file-input')?.click()}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-full px-4 text-xs font-semibold"
+                onClick={() => setShowMedicalUpload(!showMedicalUpload)}
               >
-                <Upload className="w-8 h-8 text-primary/60 mx-auto mb-2" />
-                <p className="text-sm font-medium text-foreground mb-1">
-                  Click to upload or drag & drop medical records
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Images or PDFs (PNG, JPG, PDF)
-                </p>
-                <input 
-                  id="medical-file-input"
-                  type="file" 
-                  multiple 
-                  accept=".pdf,.png,.jpg,.jpeg"
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files) {
-                      setMedicalFiles([...medicalFiles, ...Array.from(e.target.files)]);
-                    }
-                  }}
-                />
-              </div>
-              {medicalFiles.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">{medicalFiles.length} file(s) selected</p>
-                  <div className="flex flex-wrap gap-2">
-                    {medicalFiles.map((file, idx) => (
-                      <div key={idx} className="bg-primary/10 text-xs text-primary px-2 py-1 rounded-md flex items-center gap-1">
-                        {file.name}
-                        <button 
-                          onClick={() => setMedicalFiles(medicalFiles.filter((_, i) => i !== idx))}
-                          className="ml-1 hover:text-primary/70"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                {showMedicalUpload ? "Hide" : "Add Records"}
+              </Button>
             </div>
+
+            {/* Medical Upload Box - Conditional */}
+            {showMedicalUpload && (
+              <div className="space-y-4 pt-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div 
+                  className="border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/30 dark:bg-emerald-900/10 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 rounded-lg p-6 text-center cursor-pointer transition-all duration-200"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.add('border-emerald-500', 'bg-emerald-50/50', 'dark:bg-emerald-900/20');
+                  }}
+                  onDragLeave={(e) => {
+                    e.currentTarget.classList.remove('border-emerald-500', 'bg-emerald-50/50', 'dark:bg-emerald-900/20');
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove('border-emerald-500', 'bg-emerald-50/50', 'dark:bg-emerald-900/20');
+                    const files = Array.from(e.dataTransfer.files);
+                    setMedicalFiles([...medicalFiles, ...files]);
+                  }}
+                  onClick={() => document.getElementById('medical-file-input')?.click()}
+                >
+                  <Upload className="w-8 h-8 text-emerald-600/60 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-foreground mb-1">
+                    Click to upload or drag & drop medical records
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Valid formats: Images / PDFs
+                  </p>
+                  <input 
+                    id="medical-file-input"
+                    type="file" 
+                    multiple 
+                    accept=".pdf,.png,.jpg,.jpeg"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        setMedicalFiles([...medicalFiles, ...Array.from(e.target.files)]);
+                      }
+                    }}
+                  />
+                </div>
+                {medicalFiles.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-muted-foreground">{medicalFiles.length} file(s) selected</p>
+                    <div className="flex flex-wrap gap-2">
+                      {medicalFiles.map((file, idx) => (
+                        <div key={idx} className="bg-emerald-100 dark:bg-emerald-900/30 text-xs text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-md flex items-center gap-1">
+                          {file.name}
+                          <button 
+                            type="button"
+                            onClick={() => setMedicalFiles(medicalFiles.filter((_, i) => i !== idx))}
+                            className="ml-1 hover:text-emerald-600 dark:hover:text-emerald-300"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             <Button type="submit" className="w-full h-12 text-lg font-semibold shadow-lg hover:shadow-xl transition-all" disabled={isLoading}>
               {isLoading ? (
