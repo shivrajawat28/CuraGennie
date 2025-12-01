@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
-import { Loader2, ArrowRight, Activity, Thermometer, Heart, Droplets } from "lucide-react";
+import { Loader2, ArrowRight, Activity, Thermometer, Heart, Droplets, Upload } from "lucide-react";
 import { useLocation } from "wouter";
 import { SymptomInput } from "@/components/SymptomInput";
 
@@ -37,6 +37,7 @@ interface SymptomCheckerProps {
 export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
+  const [medicalFiles, setMedicalFiles] = useState<File[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,7 +69,24 @@ export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
   }
 
   return (
-    <Card className="w-full border-primary/10 shadow-lg bg-card/50 backdrop-blur-sm">
+    <div className="relative">
+      {/* Animated shimmer background */}
+      <div 
+        className="absolute inset-0 rounded-lg opacity-20 pointer-events-none"
+        style={{
+          background: 'linear-gradient(90deg, rgba(0, 200, 180, 0.2) 0%, rgba(100, 220, 200, 0.2) 25%, rgba(0, 200, 180, 0.2) 50%, rgba(100, 220, 200, 0.2) 75%, rgba(0, 200, 180, 0.2) 100%)',
+          backgroundSize: '200% 100%',
+          animation: 'shimmer 15s ease-in-out infinite',
+        }}
+      />
+      <style>{`
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          50% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+      `}</style>
+    <Card className="w-full border-primary/10 shadow-lg bg-card/50 backdrop-blur-sm relative z-10">
       <CardHeader className="space-y-1 pb-6 border-b border-border/50">
         <CardTitle className="text-2xl text-primary flex items-center gap-2">
           <Activity className="w-6 h-6" />
@@ -232,6 +250,73 @@ export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
               </div>
             </div>
 
+            {/* Medical History Upload Section */}
+            <div className="space-y-4 pt-4 border-t border-border/50">
+              <div>
+                <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2 mb-1">
+                  Upload Medical History <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
+                </h4>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Upload lab reports, prescriptions, or previous diagnosis notes to help improve the AI context.
+                </p>
+              </div>
+              <div 
+                className="border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-teal-50/30 dark:hover:bg-teal-900/10 rounded-lg p-6 text-center cursor-pointer transition-all duration-200"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.add('border-primary', 'bg-teal-50/30', 'dark:bg-teal-900/10');
+                }}
+                onDragLeave={(e) => {
+                  e.currentTarget.classList.remove('border-primary', 'bg-teal-50/30', 'dark:bg-teal-900/10');
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove('border-primary', 'bg-teal-50/30', 'dark:bg-teal-900/10');
+                  const files = Array.from(e.dataTransfer.files);
+                  setMedicalFiles([...medicalFiles, ...files]);
+                }}
+                onClick={() => document.getElementById('medical-file-input')?.click()}
+              >
+                <Upload className="w-8 h-8 text-primary/60 mx-auto mb-2" />
+                <p className="text-sm font-medium text-foreground mb-1">
+                  Click to upload or drag & drop medical records
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Images or PDFs (PNG, JPG, PDF)
+                </p>
+                <input 
+                  id="medical-file-input"
+                  type="file" 
+                  multiple 
+                  accept=".pdf,.png,.jpg,.jpeg"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      setMedicalFiles([...medicalFiles, ...Array.from(e.target.files)]);
+                    }
+                  }}
+                />
+              </div>
+              {medicalFiles.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">{medicalFiles.length} file(s) selected</p>
+                  <div className="flex flex-wrap gap-2">
+                    {medicalFiles.map((file, idx) => (
+                      <div key={idx} className="bg-primary/10 text-xs text-primary px-2 py-1 rounded-md flex items-center gap-1">
+                        {file.name}
+                        <button 
+                          onClick={() => setMedicalFiles(medicalFiles.filter((_, i) => i !== idx))}
+                          className="ml-1 hover:text-primary/70"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <Button type="submit" className="w-full h-12 text-lg font-semibold shadow-lg hover:shadow-xl transition-all" disabled={isLoading}>
               {isLoading ? (
                 <>
@@ -248,5 +333,6 @@ export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
         </Form>
       </CardContent>
     </Card>
+    </div>
   );
 }

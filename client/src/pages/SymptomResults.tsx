@@ -34,8 +34,9 @@ export default function SymptomResults() {
           
           {/* Back Button */}
           <Link href="/symptom-checker">
-             <Button variant="ghost" className="gap-2 pl-0 hover:bg-transparent hover:text-primary mb-4">
-               <ArrowLeft className="w-4 h-4" /> Back to Symptom Entry
+             <Button variant="ghost" className="gap-2 pl-0 hover:bg-transparent hover:text-primary mb-6 ml-2 group">
+               <ArrowLeft className="w-5 h-5 group-hover:translate-x-1 transition-transform" /> 
+               <span className="group-hover:underline transition-all">Back to Symptom Entry</span>
              </Button>
           </Link>
 
@@ -64,7 +65,7 @@ export default function SymptomResults() {
                 >
                   {/* Make the card clickable linking to detail page */}
                   <Link href={`/conditions/${idx === 0 ? 'viral-upper-respiratory-infection' : 'seasonal-allergies'}`}>
-                    <Card className="overflow-hidden border-l-4 border-l-primary shadow-md hover:shadow-xl transition-all cursor-pointer group bg-card/50 hover:bg-card">
+                    <Card className="overflow-hidden border-l-4 border-l-primary shadow-md hover:shadow-xl hover:border-teal-200 hover:bg-teal-50/30 dark:hover:bg-teal-900/10 transition-all cursor-pointer group bg-card/50 hover:-translate-y-0.5 duration-200">
                       <CardHeader className="pb-3 bg-muted/10 group-hover:bg-primary/5 transition-colors">
                         <div className="flex justify-between items-start">
                           <div>
@@ -89,8 +90,8 @@ export default function SymptomResults() {
                         </div>
                       </CardHeader>
                       <CardContent className="pt-4">
-                        <p className="text-sm text-primary font-medium flex items-center gap-1">
-                           Tap to see full details and guidance <ArrowLeft className="w-4 h-4 rotate-180" />
+                        <p className="text-sm text-primary font-medium flex items-center gap-1 group-hover:text-primary/80 group-hover:underline transition-all">
+                           Tap to see full details and guidance <ArrowLeft className="w-4 h-4 rotate-180 group-hover:translate-x-0.5 transition-transform" />
                         </p>
                       </CardContent>
                     </Card>

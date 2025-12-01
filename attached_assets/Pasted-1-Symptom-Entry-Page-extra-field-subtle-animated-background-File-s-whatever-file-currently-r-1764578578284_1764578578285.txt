@@ -1,0 +1,233 @@
+1) Symptom Entry Page – extra field + subtle animated background
+
+File(s): whatever file currently renders the main “Check Symptoms” section on the home page.
+
+a) Add “Upload Medical History (Optional)”
+
+Inside the Check Symptoms card, after the Vitals section but before the “Analyze Symptoms” button:
+
+Add a new optional block with label:
+“Upload Medical History (Optional)”
+
+Under it, add helper text in small, muted text:
+“Upload lab reports, prescriptions, or previous diagnosis notes to help improve the AI context.”
+
+Add a file upload area styled like a drag-and-drop card:
+
+Dashed border
+
+Light teal / mint background on hover
+
+Icon of a document or upload arrow
+
+Text:
+“Click to upload or drag & drop medical records (images or PDFs)”
+
+For now, you don’t need to implement backend upload logic – just wire it to a local file input and store the selected file(s) in component state.
+
+Make sure this whole section is clearly marked as optional.
+
+b) Add a very light animated shimmer / gradient background behind the symptom card
+
+Keep the current clean, premium medical look – no heavy animation.
+
+Behind the main symptom checker card, add a very soft animated background:
+
+Use a subtle gradient or shimmer effect that moves slowly.
+
+Colors should stay in the current palette: light teal / mint / very soft blue.
+
+Animation must be very low intensity so it doesn’t distract or cause motion sickness.
+
+Implementation idea (but choose any clean approach):
+
+Add an absolutely-positioned div behind the card with a gradient background.
+
+Add a slow CSS animation (e.g. gradient shift or shimmer left-to-right over 10–20 seconds).
+
+Keep opacity low (opacity-20 or similar) so content remains easy to read.
+
+2) Results Page – improve interactions and back button
+
+File(s): the page that shows “Based on your inputs, here’s what we found”.
+
+a) Back button spacing + stronger icon
+
+At the top, where it says “Back to Symptom Entry” (or “Back to Results” on condition page later):
+
+Add a bit more left margin/padding so it doesn’t stick to the edge.
+
+Use a slightly bolder / clearer back icon (e.g. larger arrow icon, h-5 w-5 or similar).
+
+Keep text + icon aligned nicely and clickable as one button with hover state (slight underline or tint).
+
+b) Make each “Possible Conditions” card feel clickable
+
+For each condition card (e.g., “Viral Upper Respiratory Infection”, “Seasonal Allergies”):
+
+Ensure the entire card is a clickable region, not just the text.
+
+Add hover styling:
+
+Slight lift (shadow-lg + -translate-y-0.5 with transition).
+
+Very soft border or background highlight (border-teal-200 or bg-teal-50).
+
+Keep it subtle and premium.
+
+c) Improve “Tap to see full details and guidance” text
+
+Make this text look more like an interactive link:
+
+On hover: add underline + color change (e.g. from teal-600 to teal-700).
+
+Smooth transition-colors and transition-all.
+
+Optionally add a small right arrow icon that slightly shifts to the right on hover.
+
+3) Doctors Page – filters, hover animation, and price
+
+File(s): the page that shows “Recommended Specialists” / doctor cards.
+
+a) Add mini filter bar at the top of the doctor list
+
+Above the doctor cards, add a simple filter row:
+
+A dropdown / segmented control for Speciality
+
+Options like: “All”, “General Physician”, “Cardiologist”, “Dermatologist”, etc.
+
+A dropdown for Experience
+
+Example options: “Any”, “5+ years”, “10+ years”.
+
+A dropdown or slider for Consultation Fees
+
+Example options: “Any”, “₹0–₹500”, “₹500–₹1000”, “₹1000+”.
+
+For now, filters can work on static dummy values, but set up the state so it’s easy to plug in real data later.
+
+Make the filter bar clean and compact, aligned with current visual style.
+
+b) Add subtle hover lift animation to doctor cards
+
+For each doctor card:
+
+On hover:
+
+Slight lift (-translate-y-1)
+
+Slight shadow increase (shadow-xl)
+
+Smooth transition-all duration-200.
+
+Cursor should become pointer.
+
+c) Show consultation price on doctor card
+
+On each doctor card, display doctor’s video consultation fee:
+
+Add a line like:
+“Video Consultation: ₹799” (use realistic dummy data per doctor).
+
+Style it in a slightly bold, but not shouty way.
+
+Place it near availability info or above the “Book” button.
+
+Ensure it looks aligned on both desktop and mobile.
+
+4) Condition Detail Page – illustrations and warning icon animation
+
+File(s): the page that opens when user clicks on a condition (e.g. “Viral Upper Respiratory Infection” details).
+
+a) Add simple vector-style illustrations
+
+Add a small medical illustration near the top title or inside the first section.
+
+Use a flat 2D vector style (simple, clean, soft teal / blue tones).
+
+It can be:
+
+A lungs / throat icon for respiratory conditions,
+
+Or a generic health illustration that fits all conditions.
+
+You can use:
+
+Either a local SVG in /public or /assets, OR
+
+Simple icon combinations styled bigger.
+
+Make sure it doesn’t overpower text – just adds visual interest.
+
+b) Important Safety Note – animated warning icon
+
+In the red “Important Safety Note” box:
+
+Keep the text exactly as is (legal disclaimer).
+
+Add a warning/alert icon on the left.
+
+Give the icon a very subtle bounce or pulse animation:
+
+Slow, small scale animation (e.g. gently pulsing every 2–3 seconds).
+
+Use Tailwind + custom keyframes or simple CSS.
+
+Make sure the animation is minimal and not annoying.
+
+5) Footer – polish links, border, and mini heartbeat animation
+
+File(s): the footer component.
+
+a) Link spacing + hover underline
+
+Increase vertical spacing between link items (Quick Links, Legal).
+
+On hover:
+
+Change link color slightly darker teal.
+
+Add underline with smooth transition-colors & transition-all.
+
+b) Add a faint gradient top border
+
+At the top of the footer, add a 1–2px gradient line:
+
+For example: left to right from teal-300 → cyan-300 → teal-300.
+
+Use a div or border using bg-gradient-to-r.
+
+It should be subtle, just to visually separate footer from body.
+
+c) Heartbeat animation beside logo
+
+Next to the “Cura Gennie” logo or text in the footer:
+
+Add a small heart or heart-monitor icon.
+
+Apply a very subtle heartbeat animation:
+
+Quick double-pulse, then rest, repeating slowly.
+
+Low intensity (no huge scale jumps).
+
+Keep it consistent with brand colors (teal/light red combo, or teal only).
+
+General Requirements
+
+Keep design consistent with the current Cura Gennie branding:
+
+Same font stack
+
+Similar corner radius
+
+Same teal/mint/white palette.
+
+Don’t break existing routes or remove existing copy.
+
+Wherever you add motion, keep it subtle and premium, not cartoonish.
+
+Make sure everything remains fully responsive (desktop + mobile).
+
+Implement all of the above changes now in the existing codebase.

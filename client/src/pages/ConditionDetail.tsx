@@ -4,7 +4,7 @@ import { MOCK_CONDITION_DETAILS, MOCK_DOCTORS } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, ArrowLeft, Calendar, CheckCircle2, Heart, MapPin, Shield, Star, Users, Video } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Calendar, CheckCircle2, Heart, MapPin, Shield, Star, Users, Video, Stethoscope } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 
@@ -41,17 +41,24 @@ export default function ConditionDetail() {
 
           {/* 1) Condition Overview */}
           <section className="space-y-4">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-3xl md:text-4xl font-bold font-heading text-primary">
-                {condition.name}
-              </h1>
-              <Badge variant={condition.severity === 'high' ? 'destructive' : 'secondary'} className="uppercase tracking-wider">
-                {condition.severity} Severity
-              </Badge>
+            <div className="flex items-start gap-4 flex-wrap">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 flex-wrap mb-4">
+                  <h1 className="text-3xl md:text-4xl font-bold font-heading text-primary">
+                    {condition.name}
+                  </h1>
+                  <Badge variant={condition.severity === 'high' ? 'destructive' : 'secondary'} className="uppercase tracking-wider">
+                    {condition.severity} Severity
+                  </Badge>
+                </div>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {condition.overview}
+                </p>
+              </div>
+              <div className="text-teal-500/60 mt-2">
+                <Stethoscope className="w-16 h-16" />
+              </div>
             </div>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              {condition.overview}
-            </p>
           </section>
 
           {/* 2) Causes & Effects */}
@@ -144,8 +151,17 @@ export default function ConditionDetail() {
           </div>
 
           {/* 6) Important Safety Disclaimer */}
+          <style>{`
+            @keyframes gentle-pulse {
+              0%, 100% { opacity: 1; transform: scale(1); }
+              50% { opacity: 0.8; transform: scale(1.05); }
+            }
+            .pulse-icon {
+              animation: gentle-pulse 2.5s ease-in-out infinite;
+            }
+          `}</style>
           <div className="bg-destructive/10 border border-destructive/20 p-6 rounded-xl flex gap-4 items-start">
-            <AlertTriangle className="w-6 h-6 text-destructive shrink-0 mt-0.5" />
+            <AlertTriangle className="w-6 h-6 text-destructive shrink-0 mt-0.5 pulse-icon" />
             <div className="space-y-1">
               <h4 className="font-bold text-destructive">Important Safety Note</h4>
               <p className="text-destructive/90 text-sm leading-relaxed">

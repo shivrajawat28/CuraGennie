@@ -12,6 +12,8 @@ import { useState } from "react";
 export default function Doctors() {
   const [search, setSearch] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("all");
+  const [experienceFilter, setExperienceFilter] = useState("any");
+  const [feeFilter, setFeeFilter] = useState("any");
 
   const filteredDoctors = MOCK_DOCTORS.filter(doc => {
     const matchesSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -36,7 +38,7 @@ export default function Doctors() {
           </div>
 
           {/* Filters */}
-          <div className="bg-card p-4 rounded-xl border border-border shadow-sm flex flex-col md:flex-row gap-4">
+          <div className="bg-card p-4 rounded-xl border border-border shadow-sm space-y-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input 
@@ -46,7 +48,7 @@ export default function Doctors() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <div className="w-full md:w-64">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
                 <SelectTrigger>
                   <SelectValue placeholder="Specialty" />
@@ -59,16 +61,47 @@ export default function Doctors() {
                   <SelectItem value="Pediatrician">Pediatrician</SelectItem>
                 </SelectContent>
               </Select>
+              <Select value={experienceFilter} onValueChange={setExperienceFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Experience" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Any</SelectItem>
+                  <SelectItem value="5plus">5+ years</SelectItem>
+                  <SelectItem value="10plus">10+ years</SelectItem>
+                  <SelectItem value="15plus">15+ years</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={feeFilter} onValueChange={setFeeFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Consultation Fee" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Any Fee</SelectItem>
+                  <SelectItem value="0-500">₹0–₹500</SelectItem>
+                  <SelectItem value="500-1000">₹500–₹1000</SelectItem>
+                  <SelectItem value="1000plus">₹1000+</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button 
+                variant="outline" 
+                className="gap-2 whitespace-nowrap"
+                onClick={() => {
+                  setSearch("");
+                  setSpecialtyFilter("all");
+                  setExperienceFilter("any");
+                  setFeeFilter("any");
+                }}
+              >
+                <Filter className="w-4 h-4" /> Clear Filters
+              </Button>
             </div>
-            <Button variant="outline" className="gap-2">
-              <Filter className="w-4 h-4" /> More Filters
-            </Button>
           </div>
 
           {/* Doctors Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDoctors.map((doctor) => (
-              <Card key={doctor.id} className="hover:shadow-lg transition-all group">
+              <Card key={doctor.id} className="hover:shadow-xl hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
                 <div className="h-48 overflow-hidden relative">
                   <img 
                     src={doctor.image} 
@@ -94,6 +127,9 @@ export default function Doctors() {
                   </div>
                   <div className="flex items-center gap-2 text-green-600 bg-green-50/50 dark:bg-green-900/10 p-2 rounded-md w-fit">
                     <Calendar className="w-4 h-4" /> {doctor.availability}
+                  </div>
+                  <div className="pt-2 text-sm font-semibold text-primary">
+                    Video Consultation: ₹799
                   </div>
                   <div className="flex flex-wrap gap-2 pt-2">
                      <Badge variant="secondary" className="font-normal text-xs">Video Consult</Badge>
