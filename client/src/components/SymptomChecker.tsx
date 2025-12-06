@@ -54,20 +54,59 @@ export function SymptomChecker({ onAnalyze }: SymptomCheckerProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // Simulate API call delay
-    setTimeout(() => {
-      setIsLoading(false);
+
+    try {
+      
       if (onAnalyze) {
         onAnalyze(values);
-      } else {
-        // If no handler provided, navigate to results with query params (mock)
-        // In a real app, we'd pass state or use a context
-        setLocation("/results");
+        return;
       }
-    }, 2000);
+
+      
+      const payload = {
+        symptoms: values.symptoms,
+        age: Number(values.age),
+        gender: values.gender,
+        duration: values.duration,
+        vitals: {
+          temperature: values.temperature || null,
+          pulse: values.pulse || null,
+          spo2: values.spo2 || null,
+          bp: values.bp || null,
+        },
+        // future: medicalFiles 
+      };
+
+      const res = await fetch("/api/analyze-symptoms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to analyze symptoms");
+      }
+
+      const data = await res.json();
+
+      
+      if (typeof window !== "undefined") {
+        localStorage.setItem("cg_last_analysis", JSON.stringify(data));
+      }
+
+      
+      setLocation("/results");
+    } catch (err) {
+      console.error(err);
+      
+      alert("Sorry, something went wrong while analyzing your symptoms. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
+
 
   return (
     <div className="relative">

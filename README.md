@@ -1,1 +1,10 @@
 # CuraGennie
+Cura Gennie is an AI-powered personal health companion designed to help users understand their symptoms, receive basic wellness guidance, and connect with the right medical professionals—quickly, safely, and without confusion. The platform allows users to enter their symptoms along with optional details such as age, gender, duration, and vitals. Cura Gennie’s AI engine then generates a structured health analysis that includes possible conditions, explanation of how the issue may have developed, prevention tips, lifestyle recommendations, home remedies, and a clear guidance summary.
+
+The app focuses strongly on safety, avoiding any medical dosages or self-treatment instructions. Instead, it provides awareness-level insights so users can make informed decisions while still consulting a real doctor. The results page is designed like a modern medical dashboard: each condition has its own detailed breakdown, including “How This Happens,” “Daily Tips,” “Red Flags,” “When to Seek Help,” “Home Remedies,” and an optional prescription-like section for common over-the-counter items (awareness only).
+
+Cura Gennie also features a doctor recommendation system, showing nearby or specialty-matched doctors in visually rich, detailed cards. Each card displays ratings, experience, consultation fees, availability, clinic location, and quick actions like Book Appointment and Video Consult.
+
+To keep the experience smooth and accessible, the app runs on mock or hybrid AI logic when paid APIs aren’t available, ensuring consistent responses during demos or offline use. The entire UI is carefully styled with modern cards, glowing accents, clean typography, and interactive transitions to create a professional, app-like experience.
+
+Overall, Cura Gennie aims to bridge the gap between raw symptom Googling and real medical consultation—giving users clarity, confidence, and direction when they need it most.
