@@ -36,12 +36,7 @@ export default function Home() {
                   </p>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span>Trusted by 10k+ users</span>
-                  </div>
-                </div>
+                
               </motion.div>
 
               {/* Right Column: Symptom Checker Card */}
@@ -52,7 +47,7 @@ export default function Home() {
                 className="relative"
               >
                 {/* Decorative blob behind card */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-3xl blur-xl transform scale-105" />
+                <div className="absolute inset-0 bg-linear-to-tr from-primary/20 to-secondary/20 rounded-3xl blur-xl transform scale-105" />
                 
                 <SymptomChecker />
               </motion.div>
